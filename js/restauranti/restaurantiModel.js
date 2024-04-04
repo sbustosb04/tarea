@@ -1,5 +1,11 @@
 "use strict";
 
+import {
+    Dish, Category, Allergen, Menu, Restaurant, Coordinate,
+  } from '../entidades.js';
+
+
+
 class ManagerException extends BaseException {
     constructor(message = 'Error: Manager Exception.', fileName, lineNumber) {
       super(message, fileName, lineNumber);
@@ -162,7 +168,8 @@ const RestaurantsManager = (function () {
                     throw new EmptyValueException("name");
                 }   
 				this.#name = name;
-            }           
+            }
+
 
             get categories() {
                 // Variable para el registro del indice actual al iterar sobre el array
@@ -543,7 +550,7 @@ const RestaurantsManager = (function () {
                     // Obtiene la posición del plato
                     let dishPosition = this.#getDishPosition(dish, this.#allergens[allergenPosition].dishes);
 
-                    console.log(`Platos para eliminar de Allergen: ${allergen.name}, Dish: ${dish.name}, Dish Position: ${dishPosition}`);
+                    //console.log(`Platos para eliminar de Allergen: ${allergen.name}, Dish: ${dish.name}, Dish Position: ${dishPosition}`);
 
                     if (dishPosition !== -1) {
                         // Borra el alérgeno asociado al plato
@@ -611,6 +618,9 @@ const RestaurantsManager = (function () {
                         throw new NullOrInvalidDishException(dish);
                     }         
                     let dishPosition = this.#getDishPosition(dish, this.#menus[menuPosition].dishes);
+
+                    console.log(`Platos para eliminar de Menu: ${menu.name}, Dish: ${dish.name}, Dish Position: ${dishPosition}`);
+
                     if (dishPosition !== -1) {
                         this.#menus[menuPosition].dishes.splice(dishPosition, dishes.length);
                     } else {
@@ -631,57 +641,26 @@ const RestaurantsManager = (function () {
                     throw new MenuNotRegisteredException(menu);
                 }
                 // Obtiene la posicion de los platos
-                let dish1Position = this.#getDishPositionInMenu2(dish1, this.#menus[menuPosition].dishes);
-                let dish2Position = this.#getDishPositionInMenu2(dish2, this.#menus[menuPosition].dishes);
+                let dish1Position = this.#getDishPositionInMenu(dish1, this.#menus[menuPosition]);
+                let dish2Position = this.#getDishPositionInMenu(dish2, this.#menus[menuPosition]);
                 if (dish1Position === - 1 || dish2Position === -1){ 
                     throw new DishNotRegisteredException(dish1, dish2);
                 } 
-                //console.log('Estado actual del menú:', m3);
-                //console.log('Nombres de los platos en el menú:', m3.dishes.map(x => x.name));
-                
+                // Imprime los nombres de los platos antes del intercambio
+                console.log("Nombres de los platos antes del intercambio:");
+                console.log("Plato 1:", this.#menus[menuPosition].dishes[dish1Position].name, `[${dish1Position}]`);
+                console.log("Plato 2:", this.#menus[menuPosition].dishes[dish2Position].name, `[${dish2Position}]`);
+                            
                 // Cambia las posiciones de los platos
                 [this.#menus[menuPosition].dishes[dish1Position], this.#menus[menuPosition].dishes[dish2Position]] =
                     [this.#menus[menuPosition].dishes[dish2Position], this.#menus[menuPosition].dishes[dish1Position]];
 
-                let dish1PositionAfter = this.#getDishPosition(dish1, this.#menus[menuPosition].dishes);
-                let dish2PositionAfter = this.#getDishPosition(dish2, this.#menus[menuPosition].dishes);
-                
-                console.log(`Antes del cambio - Plato1 en posición: ${dish1Position}, Plato2 en posición: ${dish2Position}`);
-                console.log(`Después del cambio - Plato1 en posición: ${dish1PositionAfter}, Plato2 en posición: ${dish2PositionAfter}`);
+                // Imprime las posiciones de los platos después del intercambio
+                console.log(`Después del cambio - Plato1 en posición: ${dish2Position}, Plato2 en posición: ${dish1Position}`);
 
                 return [dish1Position, dish2Position];
-            }
-
-  /*          changeDishesPositionsInMenu(menu, dish1, dish2) {
-                if (menu === null) {
-                    throw new NullOrInvalidMenuException(menu);
-                } 
+            } 
             
-                let menuPosition = this.#getMenuPosition(menu);
-                if (menuPosition === -1) {
-                    throw new MenuNotRegisteredException(menu);
-                }
-            
-                let dishes = this.#menus[menuPosition];
-                let dish1Position = this.#getDishPositionInMenu(dish1, menu.dishes);
-                let dish2Position = this.#getDishPositionInMenu(dish2, menu.dishes);
-            
-                if (dish1Position === -1 || dish2Position === -1){ 
-                    throw new DishNotRegisteredException(dish1, dish2);
-                } 
-            
-                // Utilizar splice para intercambiar las posiciones de los platos
-                dishes.splice(dish1Position, 1, dish2Position);
-                dishes.splice(dish2Position, 1, dish1Position);
-            
-                //let dish1PositionAfter = this.#getDishPositionInMenu(dish1, this.#menus[menuPosition].dishes);
-                //let dish2PositionAfter = this.#getDishPositionInMenu(dish2, this.#menus[menuPosition].dishes);
-                
-                //console.log(`Antes del cambio - Plato1 en posición: ${dish1Position}, Plato2 en posición: ${dish2Position}`);
-                //console.log(`Después del cambio - Plato1 en posición: ${dish1PositionAfter}, Plato2 en posición: ${dish2PositionAfter}`);
-            
-                return [dish1Position, dish2Position];
-            }*/
             
             // Generador con método iterador
             getDishesInCategory(category){
@@ -874,7 +853,7 @@ const RestaurantsManager = (function () {
                 }  
 
                 //return array;
-            } 
+            }
         }
    
         const instance = new RestaurantsManager();
@@ -891,3 +870,9 @@ const RestaurantsManager = (function () {
       },
     };
   })();
+
+  export default RestaurantsManager;
+
+  export { 
+    Dish, Category, Allergen, Menu, Restaurant, Coordinate,
+  }; 

@@ -116,7 +116,7 @@ class Allergen {
     }
   
     toString() {
-      return `Allergen: ${this.#name} - ${this.#description}`;
+      return ` ${this.#name} - ${this.#description}`;
     }
 }
   
@@ -231,5 +231,8 @@ class Coordinate {
     }
 }
 
+export { 
+  Dish, Category, Allergen, Menu, Restaurant, Coordinate,
+}; 
 
   
